@@ -1,7 +1,7 @@
 // 游戏控制类 - 管理游戏流程和场景切换
 class Game {
   constructor() {
-    // 初始化玩家1
+    // 初始化玩家
     this.player = new Player();
 
     // 添加对gameItems的引用
