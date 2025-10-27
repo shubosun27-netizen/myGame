@@ -1562,6 +1562,16 @@ class Game {
       // 通用任务完成检查（新增）
       case "checkQuestStatus":
         if (this.player.currentQuest) {
+          // 检查是否为"前往XX"类型的任务（任务ID以"to"开头）
+          if (this.player.currentQuest.id.startsWith("to")) {
+            this.showModal(
+              "任务提示", 
+              `"${this.player.currentQuest.name}"需要到达目标地点才能自动完成。\n` +
+              `请继续前往目标地点，任务将在到达时自动完成。`
+            );
+            return true;
+          }
+
           const questInfo = gameQuests.getQuest(this.player.currentQuest.id);
           if (
             this.player.currentQuest.currentCount >= this.player.currentQuest.targetCount

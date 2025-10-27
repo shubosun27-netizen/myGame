@@ -1591,7 +1591,7 @@ const gameScenes = {
                 text: "前往天津镇",
                 nextScene: "tianjinPort",
                 action: "checkQuestPrerequisite",
-                actionData: { requiredQuest: "toTianjinTown" }
+                actionData: { requiredQuest: "giantPoisonBeetle" }
             },
             {
                 text: "返回南宫村广场",
@@ -1811,13 +1811,13 @@ const gameScenes = {
 
     // 天津镇港口
     tianjinPort: {
-        title: "天津镇港口", // 修复：将name改为title
+        title: "天津镇港口", 
         desc: "你来到了天津镇港口，这里是通往第二大陆的重要门户。码头上停靠着几艘大船，海风吹拂着你的脸庞。",
         options: [
             {
                 text: "与港口管理员王交谈",
                 nextScene: "tianjinPortMaster",
-                action: null
+                action: "completeToTianjinTown"
             },
             {
                 text: "乘船前往第二大陆",
