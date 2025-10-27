@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>艾瑞亚与瓦尔哈拉 - 纯文字冒险</title>
+    <link rel="stylesheet" href="/res/css/index.css?t=202510">
+</head>
+
+<body>
+    <script type="text/javascript">
+        function loadLib(url) {
+            return new Promise((resolve, reject) => {
+                var script = document.createElement("script");
+                script.async = false;
+                script.src = url + '?t=' + Date.now();
+                script.src = url;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.body.appendChild(script);
+            });
+        }
+
+
+        var DEBUG = true;
+
+        var GAME_VERSION = "1.0.1";
+
+    </script>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <button class="nav-btn active" id="gameNavBtn">游戏</button>
+        <button class="nav-btn" id="inventoryNavBtn">背包</button>
+        <button class="nav-btn" id="equipmentNavBtn">装备</button>
+        <!-- 强化功能迁移到装备页面 -->
+        <!-- <button class="nav-btn" id="enhancementNavBtn">强化</button> -->
+    </div>
+
+    <!-- 状态面板 -->
+    <div class="status-panel">
+        <span>姓名：<span id="playerName" class="highlight">冒险者</span></span>
+        <span>等级：<span id="level" class="highlight">1</span>级</span>
+        <span>生命值：<span id="hp" class="highlight">50</span>
+            <span>金币：<span id="gold" class="highlight">10</span></span>
+            <br>
+            <span>攻击力：<span id="attack" class="highlight">8</span></span>
+            <span>防御力：<span id="defense" class="highlight">0</span></span>
+            <!-- 在状态面板中添加经验条元素 -->
+            <span>经验：<span id="expRatio" class="highlight">0/100</span></span>
+            <br>
+            <button class="traits-toggle-btn" id="traitsToggleBtn">特性 ▼</button>
+            <div class="traits-content" id="traitsContent" style="display: none;">
+                <div class="traits-row">
+                    <span>中毒抗性：<span id="poisonResistance" class="highlight" style="width: 50px;">0%</span></span>
+                    <span>麻痹抗性：<span id="paralysisResistance" class="highlight" style="width: 50px;">0%</span></span>
+                    <span>石化抗性：<span id="petrificationResistance" class="highlight"
+                            style="width: 50px;">0%</span></span>
+                </div>
+                <div class="traits-row">
+                    <span>中毒攻击：<span id="poisonAttack" class="highlight" style="width: 50px;">0%</span></span>
+                    <span>麻痹攻击：<span id="paralysisAttack" class="highlight" style="width: 50px;">0%</span></span>
+                    <span>石化攻击：<span id="petrificationAttack" class="highlight" style="width: 50px;">0%</span></span>
+                </div>
+                <div class="traits-row">
+                    <span>暴击率：<span id="criticalRate" class="highlight" style="width: 50px;">0%</span></span>
+                    <span>闪避率：<span id="dodgeRate" class="highlight" style="width: 50px;">0%</span></span>
+                    <span>格挡率：<span id="blockRate" class="highlight" style="width: 50px;">0%</span></span>
+                </div>
+            </div>
+    </div>
+
+    <!-- 任务面板 -->
+    <div class="quest-panel" id="activeQuestPanel">
+        <h3 id="activeQuestName">当前任务：无</h3>
+        <p>目标：<span id="activeQuestTarget">无</span></p>
+        <p>进度：<span id="activeQuestProgress">0/0</span></p>
+        <p>奖励：<span id="activeQuestReward">无</span></p>
+        <button class="item-action-btn" id="abandonQuestBtn">放弃任务</button>
+    </div>
+
+    <!-- 游戏页面 -->
+    <div class="page active" id="gamePage">
+        <div class="scene-container">
+            <h2 class="scene-title" id="sceneTitle">欢迎来到艾瑞亚大陆</h2>
+            <p class="scene-desc" id="sceneDesc">这片神秘的土地充满了冒险与挑战。在开始你的旅程之前，请为自己取一个名字吧。</p>
+
+            <!-- 角色创建面板 -->
+            <div id="characterCreatePanel">
+                <input type="text" id="characterName" placeholder="输入你的名字" />
+                <button id="startBtn">开始冒险</button>
+            </div>
+
+            <!-- 游戏选项容器 -->
+            <div id="optionsContainer" class="hidden">
+                <!-- 选项通过JS动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 背包页面 -->
+    <div class="page" id="inventoryPage">
+        <div class="scene-container">
+            <h2 class="page-title">背包</h2>
+            <div class="item-list" id="inventoryList">
+                <!-- 物品通过JS动态生成 -->
+                <div class="item-slot">
+                    <p>暂无物品</p>
+                </div>
+            </div>
+            <button class="option-btn" id="backFromInventory">返回游戏</button>
+        </div>
+    </div>
+
+    <!-- 装备页面 -->
+    <div class="page" id="equipmentPage">
+        <div class="scene-container">
+            <h2 class="page-title">装备</h2>
+            <div class="equipment-slots" id="equipmentSlots">
+                <!-- 装备槽通过JS动态生成 -->
+                <div class="equipment-slot">
+                    <p>头部：无</p>
+                </div>
+                <div class="equipment-slot">
+                    <p>肩部：无</p>
+                </div>
+                <div class="equipment-slot">
+                    <p>身体：无</p>
+                </div>
+                <div class="equipment-slot">
+                    <p>手部：无</p>
+                </div>
+                <div class="equipment-slot">
+                    <p>腿部：无</p>
+                </div>
+                <div class="equipment-slot">
+                    <p>脚部：无</p>
+                </div>
+                <div class="equipment-slot">
+                    <p>手镯：无</p>
+                </div>
+                <div class="equipment-slot">
+                    <p>项链：无</p>
+                </div>
+            </div>
+            <button class="option-btn" id="backFromEquipment">返回游戏</button>
+        </div>
+    </div>
+
+    <!-- 强化页面 -->
+    <div class="page" id="enhancementPage">
+        <div class="scene-container">
+            <h2 class="page-title">装备强化</h2>
+            <div class="enhancement-info" id="enhancementInfo">
+                <p>请选择要强化的装备</p>
+            </div>
+            <div class="equipment-slots" id="enhancementSlots">
+                <!-- 装备槽通过JS动态生成 -->
+            </div>
+            <button class="option-btn" id="backFromEnhancement">返回游戏</button>
+        </div>
+    </div>
+
+    <!-- 弹窗（奖励/提示用） -->
+    <div class="modal hidden" id="modal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="modalTitle">获得奖励</h3>
+            <p class="modal-desc" id="modalDesc">你获得了新手木剑（攻击力+3）！</p>
+            <button class="modal-btn" id="modalBtn">确定</button>
+        </div>
+    </div>
+
+    <!-- 强化详情弹窗 -->
+    <div class="modal hidden" id="enhancementModal">
+        <div class="modal-content">
+            <h3 class="modal-title">装备强化</h3>
+            <div class="enhancement-details">
+                <p id="selectedEquipmentName">装备名称</p>
+                <p id="currentEnhancementLevel">当前强化等级：+0</p>
+                <p id="enhancementRate">成功率：0%</p>
+                <p id="requiredMaterial">所需材料：无</p>
+                <p id="requiredGold">所需金币：0</p>
+                <div class="item-actions">
+                    <button class="item-action-btn enhance" id="enhanceBtn">强化</button>
+                    <button class="item-action-btn" id="closeEnhancementModal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 动态提示条容器 -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- 通用弹窗 -->
+    <div class="modal hidden" id="confirmModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="confirmModalTitle">确认操作</h3>
+            <p id="confirmModalDesc">确认要执行此操作吗？</p>
+            <div class="modal-actions">
+                <button id="confirmSellBtn" class="btn">确认</button>
+                <button id="cancelSellBtn" class="btn btn-secondary">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入游戏脚本 -->
+    <script>
+        // 按顺序加载所有依赖文件，然后初始化游戏
+        async function initGame() {
+            try {
+                // 按依赖顺序加载文件
+                await loadLib("player.js");
+                await loadLib("scenes.js");
+                await loadLib("items.js");
+                await loadLib("monsters.js");
+                await loadLib("quests.js");
+                await loadLib("npcs.js");
+                await loadLib("game.js");
+
+                // 所有文件加载完成后初始化游戏
+                new Game();
+            } catch (error) {
+                console.error("游戏初始化失败:", error);
+                alert("游戏加载失败，请刷新页面重试。");
+            }
+        }
+
+        // 页面加载完成后初始化游戏
+        window.addEventListener("DOMContentLoaded", () => {
+            initGame();
+        });
+    </script>
+</body>
+
+</html>
