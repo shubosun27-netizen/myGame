@@ -21,6 +21,10 @@ class Player {
       this.exp = 0;
       this.expToNextLevel = 100;
 
+      // 治疗系统 - 受伤状态
+      this.injuryStatus = "none"; // 受伤状态：none(无伤), white(白伤), yellow(黄伤), red(红伤), soul(掉魂)
+      this.injurySeverity = 0; // 受伤严重程度（0-100）
+
 
       // 角色特性系统
       this.characterTraits = {
@@ -84,6 +88,13 @@ class Player {
       // 位置信息
       this.currentContinent = 1; // 默认在第一大陆
       this.currentLocation = "新手村"; // 默认在新手村
+
+      // 治疗系统 - 治疗费用
+      this.baseCosts = {
+        nurse: { white: 50, yellow: 100, red: 200, soul: 400 },
+        intern: { white: 100, yellow: 200, red: 400, soul: 800 },
+        senior: { white: 200, yellow: 400, red: 800, soul: 1600 }
+      };
     }
   }
 
@@ -115,6 +126,11 @@ class Player {
     this.gold = data.gold || 10000; // 玩家金币
     this.exp = data.exp || 0; // 玩家经验值
     this.expToNextLevel = data.expToNextLevel || 100; // 玩家升级所需经验值
+
+    // 治疗系统 - 受伤状态
+    this.injuryStatus = data.injuryStatus || "none"; // 受伤状态
+    this.injurySeverity = data.injurySeverity || 0; // 受伤严重程度
+
 
     // 加载位置信息
     this.currentContinent = data.currentContinent || 1;
@@ -191,14 +207,17 @@ class Player {
         gold: this.gold,
         exp: this.exp,
         expToNextLevel: this.expToNextLevel,
-        characterTraits: this.characterTraits, // 新增：保存特性数据
+        characterTraits: this.characterTraits,
         equipment: this.equipment,
         inventory: this.inventory,
         currentQuest: this.currentQuest,
         completedQuests: this.completedQuests,
         // 保存位置信息
         currentContinent: this.currentContinent,
-        currentLocation: this.currentLocation
+        currentLocation: this.currentLocation,
+        // 治疗系统 - 受伤状态
+        injuryStatus: this.injuryStatus,
+        injurySeverity: this.injurySeverity,
       };
       localStorage.setItem("playerData", JSON.stringify(data));
       return true;
@@ -353,11 +372,6 @@ class Player {
   // 获取总攻击力
   get totalAttack() {
     let attack = this.baseAttack;
-    // 累加所有装备提供的攻击力
-    // if (this.equipment.weapon) attack += this.equipment.weapon.attack || 0;
-    // if (this.equipment.bracelet) attack += this.equipment.bracelet.attack || 0;
-    // if (this.equipment.necklace) attack += this.equipment.necklace.attack || 0;
-    // return attack;
 
     // 累加所有攻击装备提供的攻击力（包含强化后的属性）
     if (this.equipment.weapon) {
@@ -742,12 +756,153 @@ class Player {
     this.stamina = this.maxStamina;
   }
 
+  // 获取受伤状态描述
+  getInjuryDescription() {
+    switch (this.injuryStatus) {
+      case "white":
+        return "白伤（全属性下降10%）";
+      case "yellow":
+        return "黄伤（全属性下降20%）";
+      case "red":
+        return "红伤（全属性下降40%）";
+      case "soul":
+        return "掉魂（全属性下降80%）";
+      default:
+        return "健康";
+    }
+  }
+
   // 受到伤害
   takeDamage(attack) {
     // 计算实际伤害（攻击方攻击力 - 玩家防御力，最低1点）
     const damage = Math.max(1, attack - this.totalDefense);
     this.hp = Math.max(0, this.hp - damage);
+
+    // 根据伤害严重程度可能触发受伤状态
+    if (damage >= this.maxHp * 0.3) { // 单次伤害超过最大生命值30%可能触发受伤
+      this.checkInjuryTrigger(damage);
+    }
+
+
     return damage;
+  }
+
+  // 检查是否触发受伤状态
+  checkInjuryTrigger(damage) {
+    const triggerChance = Math.min(0.8, damage / this.maxHp); // 伤害比例越高，触发概率越高
+    if (Math.random() < triggerChance) {
+      this.worsenInjury();
+    }
+  }
+
+  // 加重受伤状态
+  worsenInjury() {
+    const injuryLevels = ["none", "white", "yellow", "red", "soul"];
+    const currentIndex = injuryLevels.indexOf(this.injuryStatus);
+    if (currentIndex < injuryLevels.length - 1) {
+      this.injuryStatus = injuryLevels[currentIndex + 1];
+      this.injurySeverity = Math.min(100, this.injurySeverity + 25);
+    }
+  }
+
+  // 治疗系统 - 不同等级医生的治疗功能
+  getTreatment(doctorType) {
+    const treatmentInfo = {
+      nurse: { // 护士
+        cost: this.getTreatmentCost("nurse"),
+        successRate: 0.6, // 60%成功率
+        failureEffect: "worsen" // 失败加重伤情
+      },
+      intern: { // 实习医生
+        cost: this.getTreatmentCost("intern"),
+        successRate: 0.8, // 80%成功率
+        failureEffect: "worsen" // 失败加重伤情
+      },
+      senior: { // 资深医生
+        cost: this.getTreatmentCost("senior"),
+        successRate: 1.0, // 100%成功率
+        failureEffect: "none" // 失败无影响
+      }
+    };
+
+    const treatment = treatmentInfo[doctorType];
+    if (!treatment) {
+      return { success: false, message: "无效的医生类型" };
+    }
+
+    // 检查金币是否足够
+    if (this.gold < treatment.cost) {
+      return {
+        success: false,
+        message: `金币不足，${doctorType === "nurse" ? "护士" : doctorType === "intern" ? "实习医生" : "资深医生"}治疗需要${treatment.cost}金币`
+      };
+    }
+
+    // 扣除金币
+    this.gold -= treatment.cost;
+
+    // 判断治疗是否成功
+    const isSuccess = Math.random() < treatment.successRate;
+
+    if (isSuccess) {
+      // 治疗成功
+      this.injuryStatus = "none";
+      this.injurySeverity = 0;
+      return {
+        success: true,
+        message: `治疗成功！伤势已完全恢复，当前状态：健康`
+      };
+    } else {
+      // 治疗失败
+      if (treatment.failureEffect === "worsen") {
+        this.worsenInjury();
+        return {
+          success: false,
+          message: `治疗失败！伤势加重，当前状态：${this.getInjuryDescription()}`
+        };
+      } else {
+        return {
+          success: false,
+          message: `治疗失败！但伤势没有加重，当前状态：${this.getInjuryDescription()}`
+        };
+      }
+    }
+  }
+
+  // 获取治疗费用（根据受伤状态和医生等级）
+  getTreatmentCost(doctorType) {
+    
+    const baseCost = this.baseCosts[doctorType]?.[this.injuryStatus] || 0;
+
+    // 根据受伤严重程度调整费用（严重程度越高，费用越高）
+    const severityMultiplier = 1 + (this.injurySeverity / 100);
+
+    return Math.floor(baseCost * severityMultiplier);
+  }
+
+  // 获取可用的医生类型（根据当前大陆和位置）
+  getAvailableDoctors() {
+    const doctors = [];
+
+    // 第一大陆：新手村有护士
+    if (this.currentContinent === 1 && this.currentLocation === "新手村") {
+      doctors.push({ type: "nurse", name: "护士", description: "基础治疗，成功率60%" });
+    }
+
+    // 第二大陆：天津镇有实习医生和资深医生
+    if (this.currentContinent === 2 && this.currentLocation === "天津镇") {
+      doctors.push({ type: "intern", name: "实习医生", description: "中级治疗，成功率80%" });
+      doctors.push({ type: "senior", name: "资深医生", description: "高级治疗，成功率100%" });
+    }
+
+    // 第三大陆：主城有所有医生
+    if (this.currentContinent === 3 && this.currentLocation === "主城") {
+      doctors.push({ type: "nurse", name: "护士", description: "基础治疗，成功率60%" });
+      doctors.push({ type: "intern", name: "实习医生", description: "中级治疗，成功率80%" });
+      doctors.push({ type: "senior", name: "资深医生", description: "高级治疗，成功率100%" });
+    }
+
+    return doctors;
   }
 
   // 增加经验值

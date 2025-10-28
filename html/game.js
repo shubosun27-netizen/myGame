@@ -74,6 +74,19 @@ class Game {
     // 鉴定费用
     this.identifyCost = 1000;
 
+    // 获取状态面板元素
+    this.elements = {
+      playerName: document.getElementById("playerName"),
+      level: document.getElementById("level"),
+      hp: document.getElementById("hp"),
+      gold: document.getElementById("gold"),
+      attack: document.getElementById("attack"),
+      defense: document.getElementById("defense"),
+      healthStatus: document.getElementById("healthStatus"), // 新增健康状态元素
+      expRatio: document.getElementById("expRatio"),
+    };
+
+
     // 初始化游戏
     this.init();
   }
@@ -1030,7 +1043,7 @@ class Game {
       // }
     }
 
-    
+
     // 装备新物品
     this.player.equipment[item.slot] = item;
     // 从背包移除
@@ -1165,6 +1178,64 @@ class Game {
           `你恢复了生命值，当前生命值：${this.player.hp}/${this.player.maxHp}`
         );
         this.savePlayerData(); // 保存数据
+        return true;
+
+      // 治疗系统 - 受伤状态治疗
+      case "treatInjury":
+        // 检查医生类型
+        if (!actionData.doctorType) {
+          this.showModal("治疗错误", "未指定医生类型");
+          return false;
+        }
+
+        // 检查玩家是否有受伤状态
+        if (this.player.injuryStatus === "none") {
+          this.showModal("无需治疗", "你目前没有受伤，无需治疗");
+          return false;
+        }
+
+        // 执行治疗
+        const treatmentResult = this.player.getTreatment(actionData.doctorType);
+
+        if (treatmentResult.success) {
+          this.showModal(
+            "治疗成功",
+            `${treatmentResult.message}\n` +
+            `花费了${this.player.getTreatmentCost(actionData.doctorType)}金币\n` +
+            `剩余金币：${this.player.gold}`
+          );
+        } else {
+          this.showModal(
+            "治疗失败",
+            `${treatmentResult.message}\n` +
+            `花费了${this.player.getTreatmentCost(actionData.doctorType)}金币\n` +
+            `剩余金币：${this.player.gold}`
+          );
+        }
+
+        this.updateStatusPanel(); // 更新状态面板显示
+        this.savePlayerData(); // 保存数据
+        return true;
+
+      // 治疗系统 - 显示医生选择
+      case "showDoctorSelection":
+        const availableDoctors = this.player.getAvailableDoctors();
+
+        if (availableDoctors.length === 0) {
+          this.showModal("无可用医生", "当前地点没有可用的医生");
+          return false;
+        }
+
+        // 创建医生选择界面
+        let doctorOptions = availableDoctors.map((doctor, index) =>
+          `${index + 1}. ${doctor.name} - ${doctor.description}\n   费用：${this.player.getTreatmentCost(doctor.type)}金币`
+        ).join("\n\n");
+
+        this.showModal(
+          "选择医生",
+          `当前受伤状态：${this.player.getInjuryDescription()}\n\n` +
+          `请选择医生进行治疗：\n\n${doctorOptions}`
+        );
         return true;
 
       // 遭遇怪物
@@ -1565,7 +1636,7 @@ class Game {
           // 检查是否为"前往XX"类型的任务（任务ID以"to"开头）
           if (this.player.currentQuest.id.startsWith("to")) {
             this.showModal(
-              "任务提示", 
+              "任务提示",
               `"${this.player.currentQuest.name}"需要到达目标地点才能自动完成。\n` +
               `请继续前往目标地点，任务将在到达时自动完成。`
             );
@@ -2660,6 +2731,9 @@ class Game {
     this.elements.gold.textContent = this.player.gold;
     this.elements.attack.textContent = this.player.totalAttack;
     this.elements.defense.textContent = this.player.totalDefense;
+
+    // 添加健康状态显示
+    this.elements.healthStatus.textContent = this.player.getInjuryDescription();
 
     this.elements.paralysisResistance.textContent = `${this.player.getTotalTrait('paralysisResistance')}%`;
     this.elements.poisonResistance.textContent = `${this.player.getTotalTrait('poisonResistance')}%`;

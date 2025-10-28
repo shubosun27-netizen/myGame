@@ -102,7 +102,7 @@ const gameScenes = {
                 action: null
             },
             {
-                text: "前往村医的小屋",
+                text: "前往晨曦村医院",
                 nextScene: "villageClinic",
                 action: null
             },
@@ -384,14 +384,20 @@ const gameScenes = {
 
     // 村医小屋
     villageClinic: {
-        title: "村医的小屋",
-        desc: "屋内弥漫着草药的气味，村医正在整理药草。看到你进来，她微笑着打招呼。",
+        title: "晨曦村医院",
+        desc: "这里是晨曦村的医院，虽然规模不大但设备齐全。护士长正在整理药品，看到你进来便热情地打招呼。医院提供不同等级医生的治疗服务，可以根据你的受伤情况选择合适的医生。",
         options: [
             {
-                text: "治疗伤势（恢复满生命值，5金币）",
+                text: "治疗伤势（恢复满生命值，500金币）",
                 nextScene: "villageClinic",
                 action: "restoreHp",
-                actionData: { type: "full", cost: 5 }
+                actionData: { type: "full", cost: 500 }
+            },
+            {
+                text: "护士治疗（基础治疗服务）",
+                nextScene: "villageClinic",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "village", availableDoctors: ["nurse"] }
             },
             {
                 text: "购买新手治疗药水（100金币）",
@@ -405,7 +411,7 @@ const gameScenes = {
                 }
             },
             {
-                text: "离开村医的小屋",
+                text: "离开医院",
                 nextScene: "villageSquare",
                 action: null
             }
@@ -783,7 +789,7 @@ const gameScenes = {
         ]
     },
 
-    // 比奇村场景（新增）
+    // 比奇村广场
     bichiVillageSquare: {
         title: "比奇村广场",
         desc: "比晨曦村更大的村庄广场，人来人往十分热闹。这里有村长家、铁匠铺和更大的装备商店。",
@@ -803,6 +809,12 @@ const gameScenes = {
             {
                 text: "前往装备商店",
                 nextScene: "bichiEquipmentShop",
+                action: "completeToBichiVillage",
+                actionData: {}
+            },
+            {
+                text: "前往比奇医院",
+                nextScene: "bichiHospital",
                 action: "completeToBichiVillage",
                 actionData: {}
             },
@@ -939,6 +951,7 @@ const gameScenes = {
             }
         ]
     },
+
     // 村长家
     villageElderHome: {
         title: "村长家",
@@ -992,6 +1005,45 @@ const gameScenes = {
             }
         ]
     },
+
+    // 比奇村医院
+    bichiHospital: {
+        title: "比奇村医院",
+        desc: "比奇村的医院比晨曦村更加专业，这里有护士和实习医生提供服务。医院设施更加完善，能够处理更严重的伤势。",
+        options: [
+            {
+                text: "护士治疗（基础治疗服务）",
+                nextScene: "bichiHospital",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "bichi", availableDoctors: ["nurse", "intern"] }
+            },
+            {
+                text: "实习医生治疗（中级治疗服务）",
+                nextScene: "bichiHospital",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "bichi", availableDoctors: ["intern"] }
+            },
+
+            {
+                text: "购买中级治疗药水（250金币）",
+                nextScene: "bichiHospital",
+                action: "buyItem",
+                actionData: {
+                    name: "中级治疗药水",
+                    effect: "恢复50点生命值",
+                    type: "potion",
+                    price: 250
+                }
+            },
+            {
+                text: "离开医院",
+                nextScene: "bichiVillageSquare",
+                action: null
+            }
+        ]
+    },
+
+
     // 比奇村村口
     bichiVillageEntrance: {
         title: "比奇村村口",
@@ -1329,6 +1381,12 @@ const gameScenes = {
                 actionData: {}
             },
             {
+                text: "前往南宫村医院",
+                nextScene: "nangongHospital",
+                action: "completeToNangongVillage",
+                actionData: {}
+            },
+            {
                 text: "查看任务完成情况",
                 nextScene: "nangongVillageSquare",
                 action: "checkQuestStatus",
@@ -1347,6 +1405,49 @@ const gameScenes = {
             }
         ]
     },
+
+    // 南宫村医院
+    nangongHospital: {
+        title: "南宫村医院",
+        desc: "南宫村的医院设备先进，拥有专业的医疗团队。这里不仅有护士和实习医生，还有经验丰富的资深医生，能够处理各种复杂的伤势。",
+        options: [
+            {
+                text: "护士治疗（基础治疗服务）",
+                nextScene: "nangongHospital",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "nangong", availableDoctors: ["nurse", "intern", "senior"] }
+            },
+            {
+                text: "实习医生治疗（中级治疗服务）",
+                nextScene: "nangongHospital",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "nangong", availableDoctors: ["intern", "senior"] }
+            },
+            {
+                text: "资深医生治疗（高级治疗服务）",
+                nextScene: "nangongHospital",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "nangong", availableDoctors: ["senior"] }
+            },
+            {
+                text: "购买高级治疗药水（500金币）",
+                nextScene: "nangongHospital",
+                action: "buyItem",
+                actionData: {
+                    name: "高级治疗药水",
+                    effect: "恢复100点生命值",
+                    type: "potion",
+                    price: 500
+                }
+            },
+            {
+                text: "离开医院",
+                nextScene: "nangongVillageSquare",
+                action: null
+            }
+        ]
+    },
+
 
     // 南宫村锻造工坊
     nangongForge: {
@@ -1811,7 +1912,7 @@ const gameScenes = {
 
     // 天津镇港口
     tianjinPort: {
-        title: "天津镇港口", 
+        title: "天津镇港口",
         desc: "你来到了天津镇港口，这里是通往第二大陆的重要门户。码头上停靠着几艘大船，海风吹拂着你的脸庞。",
         options: [
             {
@@ -2423,6 +2524,11 @@ const gameScenes = {
                 action: null
             },
             {
+                text: "前往北风村医院",
+                nextScene: "northwindHospital",
+                action: null
+            },
+            {
                 text: "查看任务情况",
                 nextScene: "northwindVillageSquare",
                 action: "checkQuestStatus",
@@ -2440,6 +2546,49 @@ const gameScenes = {
             }
         ]
     },
+
+    // 北风村医院
+    northwindHospital: {
+        title: "北风村医院",
+        desc: "北风村的医院专门处理寒冷环境下的伤势，医疗设施完善。这里有专业的医疗团队，包括护士、实习医生和资深医生，能够应对各种复杂的治疗需求。",
+        options: [
+            {
+                text: "护士治疗（基础治疗服务）",
+                nextScene: "northwindHospital",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "northwind", availableDoctors: ["nurse", "intern", "senior"] }
+            },
+            {
+                text: "实习医生治疗（中级治疗服务）",
+                nextScene: "northwindHospital",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "northwind", availableDoctors: ["intern", "senior"] }
+            },
+            {
+                text: "资深医生治疗（高级治疗服务）",
+                nextScene: "northwindHospital",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "northwind", availableDoctors: ["senior"] }
+            },
+            {
+                text: "购买抗寒治疗药水（400金币）",
+                nextScene: "northwindHospital",
+                action: "buyItem",
+                actionData: {
+                    name: "抗寒治疗药水",
+                    effect: "恢复80点生命值，30分钟内免疫低温伤害",
+                    type: "potion",
+                    price: 400
+                }
+            },
+            {
+                text: "离开医院",
+                nextScene: "northwindVillageSquare",
+                action: null
+            }
+        ]
+    },
+
 
     // 添加商队队长对话场景
     caravanCaptainDialog: {
@@ -2678,6 +2827,11 @@ const gameScenes = {
                 action: null
             },
             {
+                text: "前往星辉城医院",
+                nextScene: "starlightHospital",
+                action: null
+            },
+            {
                 text: "查看任务情况",
                 nextScene: "starlightCitySquare",
                 action: "checkQuestStatus",
@@ -2696,6 +2850,49 @@ const gameScenes = {
             }
         ]
     },
+
+    // 星辉城医院
+    starlightHospital: {
+        title: "星辉城医院",
+        desc: "星辉城的医院是大陆上最先进的医疗机构，拥有顶级的医疗设备和最专业的医疗团队。这里能够处理任何复杂的伤势，包括魔法伤害和特殊状态。",
+        options: [
+            {
+                text: "护士治疗（基础治疗服务）",
+                nextScene: "starlightHospital",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "starlight", availableDoctors: ["nurse", "intern", "senior"] }
+            },
+            {
+                text: "实习医生治疗（中级治疗服务）",
+                nextScene: "starlightHospital",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "starlight", availableDoctors: ["intern", "senior"] }
+            },
+            {
+                text: "资深医生治疗（高级治疗服务）",
+                nextScene: "starlightHospital",
+                action: "showDoctorSelection",
+                actionData: { hospitalLevel: "starlight", availableDoctors: ["senior"] }
+            },
+            {
+                text: "购买魔法治疗药水（800金币）",
+                nextScene: "starlightHospital",
+                action: "buyItem",
+                actionData: {
+                    name: "魔法治疗药水",
+                    effect: "恢复150点生命值，解除魔法负面状态",
+                    type: "potion",
+                    price: 800
+                }
+            },
+            {
+                text: "离开医院",
+                nextScene: "starlightCitySquare",
+                action: null
+            }
+        ]
+    },
+
 
     // 神秘商店
     mysticShop: {
