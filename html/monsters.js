@@ -1247,6 +1247,114 @@ const gameMonsters = {
             area: "冰川地带",
             isBoss: true
         },
+
+    // 瓦尔哈拉荒原怪物（11-20级）
+    "瓦尔哈拉荒原": {
+        // 星辉城周边怪物
+        "城市盗贼": {
+            name: "城市盗贼",
+            level: 11,
+            hp: 280,
+            maxHp: 280,
+            attack: 60,
+            defense: 35,
+            exp: 75,
+            gold: 45,
+            drop: [
+                {
+                    item: "盗贼徽章",
+                    chance: 0.6,
+                    count: 1
+                },
+                {
+                    item: "普通强化石",
+                    chance: 0.8,
+                    count: 1
+                }
+            ],
+            equipmentDrop: [
+                { item: "精良的暗影剑", chance: 0.4 },
+                { item: "精良的暗影头盔", chance: 0.4 },
+                { item: "精良的暗影胸甲", chance: 0.4 },
+                { item: "精良的暗影护腿", chance: 0.4 }
+            ],
+            trait: "擅长偷袭，暴击率 + 10%",
+            area: "星辉城周边"
+        },
+
+        "精英城市盗贼": {
+            name: "精英城市盗贼",
+            level: 12,
+            hp: 420,
+            maxHp: 420,
+            attack: 85,
+            defense: 50,
+            exp: 180,
+            gold: 120,
+            drop: [
+                {
+                    item: "盗贼徽章",
+                    chance: 0.8,
+                    count: 2
+                },
+                {
+                    item: "普通强化石",
+                    chance: 0.9,
+                    count: 1
+                },
+                {
+                    item: "精良强化石",
+                    chance: 0.2,
+                    count: 1
+                }
+            ],
+            equipmentDrop: [
+                { item: "精良的暗影剑", chance: 0.5 },
+                { item: "精良的暗影头盔", chance: 0.5 },
+                { item: "精良的暗影胸甲", chance: 0.5 },
+                { item: "精良的暗影护腿", chance: 0.5 },
+                { item: "史诗的暗影剑", chance: 0.15 }
+            ],
+            trait: "擅长偷袭和逃跑，暴击率 + 15%，移动速度 + 20%",
+            area: "星辉城周边"
+        },
+
+        "雷霆巨鹰": {
+            name: "雷霆巨鹰",
+            level: 11,
+            hp: 300,
+            maxHp: 300,
+            attack: 65,
+            defense: 40,
+            exp: 80,
+            gold: 50,
+            drop: [
+                {
+                    item: "普通强化石",
+                    chance: 0.9,
+                    count: 1
+                },
+                {
+                    item: "精良强化石",
+                    chance: 0.15,
+                    count: 1
+                }
+            ],
+            equipmentDrop: [
+                { item: "精良的雷霆长剑", chance: 0.5 },
+                { item: "精良的雷霆头盔", chance: 0.5 },
+                { item: "精良的雷霆护肩", chance: 0.5 },
+                { item: "精良的雷霆胸甲", chance: 0.5 },
+                { item: "精良的雷霆护腿", chance: 0.5 },
+                { item: "精良的雷霆战靴", chance: 0.5 },
+                { item: "精良的雷霆手套", chance: 0.5 },
+                { item: "精良的雷霆手镯", chance: 0.5 },
+                { item: "精良的雷霆项链", chance: 0.5 }
+            ],
+            trait: "会使用冲撞技能（击退玩家 3 米），需预判躲避",
+            area: "草原"
+        },
+
         "剧毒藤蔓": {
             name: "剧毒藤蔓",
             level: 16,

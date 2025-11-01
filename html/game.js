@@ -75,16 +75,16 @@ class Game {
     this.identifyCost = 1000;
 
     // 获取状态面板元素
-    this.elements = {
-      playerName: document.getElementById("playerName"),
-      level: document.getElementById("level"),
-      hp: document.getElementById("hp"),
-      gold: document.getElementById("gold"),
-      attack: document.getElementById("attack"),
-      defense: document.getElementById("defense"),
-      healthStatus: document.getElementById("healthStatus"), // 新增健康状态元素
-      expRatio: document.getElementById("expRatio"),
-    };
+    // this.elements = {
+    //   playerName: document.getElementById("playerName"),
+    //   level: document.getElementById("level"),
+    //   hp: document.getElementById("hp"),
+    //   gold: document.getElementById("gold"),
+    //   attack: document.getElementById("attack"),
+    //   defense: document.getElementById("defense"),
+    //   healthStatus: document.getElementById("healthStatus"), // 新增健康状态元素
+    //   expRatio: document.getElementById("expRatio"),
+    // };
 
 
     // 初始化游戏
@@ -224,6 +224,7 @@ class Game {
       gold: document.getElementById("gold"),
       attack: document.getElementById("attack"),
       defense: document.getElementById("defense"),
+      healthStatus: document.getElementById("healthStatus"),
 
       // 特性面板元素
       traitsToggleBtn: document.getElementById("traitsToggleBtn"),
@@ -1919,6 +1920,70 @@ class Game {
               `- 金币：500\n` +
               `- 经验值：800\n\n` +
               `欢迎来到天津镇！`
+            );
+            this.renderInventory();
+          }
+        }
+        return true;
+
+      // 处理前往北风村任务完成（新增）
+      case "completeToTianjinTown":
+        if (
+          this.player.currentQuest &&
+          this.player.currentQuest.id === "toTianjinTown"
+        ) {
+          // 更新任务进度
+          this.player.currentQuest.currentCount = 1;
+
+          // 检查任务是否完成
+          if (
+            this.player.currentQuest.currentCount >=
+            this.player.currentQuest.targetCount
+          ) {
+            // 自动完成任务并发放奖励
+            this.player.gold += 500;
+            this.player.addExp(800);
+            this.player.finishQuest();
+
+            this.showModal(
+              "任务完成",
+              `恭喜你完成了"前往北风村"任务！\n` +
+              `你获得了：\n` +
+              `- 金币：500\n` +
+              `- 经验值：800\n\n` +
+              `欢迎来到北风村！`
+            );
+            this.renderInventory();
+          }
+        }
+        return true;
+
+      // 处理前往星辉城任务完成（新增）
+      case "completeToStarCity":
+        if (
+          this.player.currentQuest &&
+          this.player.currentQuest.id === "toStarlightCity"
+        ) {
+          // 更新任务进度
+          this.player.currentQuest.currentCount = 1;
+
+          // 检查任务是否完成
+          if (
+            this.player.currentQuest.currentCount >=
+            this.player.currentQuest.targetCount
+          ) {
+            // 自动完成任务并发放奖励
+            this.player.gold += 500;
+            this.player.addExp(800);
+            this.player.finishQuest();
+
+            this.showModal(
+              "任务完成",
+              `恭喜你完成了"前往星辉城"任务！\n` +
+              `你获得了：\n` +
+              `- 金币：500\n` +
+              `- 经验值：800\n\n` +
+              `欢迎来到星辉城！`
             );
             this.renderInventory();
           }

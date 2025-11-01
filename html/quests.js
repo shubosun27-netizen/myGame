@@ -90,7 +90,7 @@ const gameQuests = {
         reward: {
             gold: 150,
             exp: 300,
-            items: ["精良的精铁护肩"]
+items: ["精良的精铁护肩"]
         },
         prerequisite: "toBichiVillage",
         nextQuest: "mineExploration"
@@ -354,7 +354,7 @@ const gameQuests = {
         npc: "北风村长",
         target: null,
         targetCount: 0,
-        description: "商队即将前往星辉城，你可以跟随他们一起出发。星辉城是魔法的中心，在那里你能学习强大的魔法技能。",
+        description: "商队即将前往星辉城，你可以跟随他们一起出发。星辉城是瓦尔哈拉荒原的重要城市，那里有更强大的装备和挑战。",
         reward: {
             gold: 500,
             exp: 800
@@ -363,61 +363,42 @@ const gameQuests = {
         nextQuest: "starlightCityEntry"
     },
 
-    "starlightCityEntry": {
-        id: "starlightCityEntry",
-        name: "星辉城入门",
-        type: "main",
-        level: 13,
-        area: "星辉城",
-        npc: "魔法导师",
-        target: null,
-        targetCount: 0,
-        description: "抵达星辉城后，魔法导师将测试你的魔法天赋，并给予你在这座魔法城市的基本指引。",
-        reward: {
-            gold: 600,
-            exp: 2000,
-            items: ["初级魔法书"]
-        },
-        prerequisite: "toStarlightCity",
-        nextQuest: "magicTraining"
-    },
-
-    "magicTraining": {
-        id: "magicTraining",
-        name: "魔法训练",
+    "cityPatrol": {
+        id: "cityPatrol",
+        name: "城市巡逻",
         type: "main",
         level: 14,
         area: "星辉城",
-        npc: "魔法导师",
-        target: "魔法元素",
+        npc: "星辉城守卫队长",
+        target: "城市盗贼",
         targetCount: 8,
-        description: "魔法导师要求你收集8个魔法元素，这将帮助你更好地理解和掌控魔法力量。",
+        description: "星辉城最近出现了一些盗贼团伙，守卫队长希望你帮忙巡逻城市周边，消灭8个城市盗贼，维护城市安全。",
         reward: {
             gold: 800,
             exp: 2500,
-            items: ["中级魔法书"]
+            items: ["精良的守卫剑"]
         },
-        prerequisite: "starlightCityEntry",
-        nextQuest: "magicExperiment"
+        prerequisite: "toStarlightCity",
+        nextQuest: "crystalMineInvestigation"
     },
 
     // 第二大陆（瓦尔哈拉荒原）任务链 - 挑战阶段
-    "magicExperiment": {
-        id: "magicExperiment",
-        name: "魔法实验",
+    "crystalMineInvestigation": {
+        id: "crystalMineInvestigation",
+        name: "水晶矿洞调查",
         type: "main",
         level: 15,
         area: "星辉城",
-        npc: "魔法导师",
+        npc: "星辉城守卫队长",
         target: "冰晶巨人",
         targetCount: 1,
-        description: "魔法导师需要冰晶巨人的核心来进行一项重要的魔法实验。前往冰川地带，击败冰晶巨人并带回它的核心。",
+        description: "星辉城附近的水晶矿洞最近出现了异常，有冰晶巨人出没。前往调查并击败冰晶巨人，确保矿洞安全。",
         reward: {
             gold: 1500,
             exp: 4000,
             items: ["史诗的冰晶剑"]
         },
-        prerequisite: "magicTraining",
+        prerequisite: "cityPatrol",
         nextQuest: "ironAnvilFortress"
     },
 
@@ -430,12 +411,12 @@ const gameQuests = {
         npc: "堡垒指挥官",
         target: null,
         targetCount: 0,
-        description: "魔法实验成功后，你被派往铁砧堡垒，这里是抵抗深渊威胁的前线基地。",
+        description: "水晶矿洞调查完成后，你被派往铁砧堡垒，这里是抵抗深渊威胁的前线基地。",
         reward: {
             gold: 1000,
             exp: 3500
         },
-        prerequisite: "magicExperiment",
+        prerequisite: "crystalMineInvestigation",
         nextQuest: "fortressDefense"
     },
 

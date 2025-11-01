@@ -2508,6 +2508,11 @@ const gameScenes = {
                 action: null
             },
             {
+                text: "前往北风村医院",
+                nextScene: "northwindHospital",
+                action: null
+            },
+            {
                 text: "与商队队长交谈",
                 nextScene: "caravanCaptainDialog",
                 action: "checkQuestPrerequisite",
@@ -2521,11 +2526,6 @@ const gameScenes = {
             {
                 text: "前往装备商店",
                 nextScene: "northwindEquipmentShop",
-                action: null
-            },
-            {
-                text: "前往北风村医院",
-                nextScene: "northwindHospital",
                 action: null
             },
             {
@@ -2569,17 +2569,6 @@ const gameScenes = {
                 nextScene: "northwindHospital",
                 action: "showDoctorSelection",
                 actionData: { hospitalLevel: "northwind", availableDoctors: ["senior"] }
-            },
-            {
-                text: "购买抗寒治疗药水（400金币）",
-                nextScene: "northwindHospital",
-                action: "buyItem",
-                actionData: {
-                    name: "抗寒治疗药水",
-                    effect: "恢复80点生命值，30分钟内免疫低温伤害",
-                    type: "potion",
-                    price: 400
-                }
             },
             {
                 text: "离开医院",
@@ -2798,32 +2787,27 @@ const gameScenes = {
     // 星辉城广场
     starlightCitySquare: {
         title: "星辉城广场",
-        desc: "你走进了星辉城的中心广场，这里比北风村更加繁华。广场中央有一个巨大的魔法喷泉，喷出的水柱在阳光下呈现出彩虹般的颜色。周围有魔法塔、魔法商店和高级装备店。",
+        desc: "你走进了星辉城的中心广场，这里比北风村更加繁华。广场中央有一个巨大的喷泉，周围环绕着各种商店和训练场所。城市守卫正在巡逻，确保城市的安全。",
         options: [
             {
-                text: "与魔法导师交谈",
-                nextScene: "magicInstructorDialog",
-                action: "checkQuestPrerequisite",
+                text: "与守卫队长交谈",
+                nextScene: "guardCaptainDialog",
+                action: "completeToStarCity",
                 actionData: { requiredQuest: "protectCaravan" }
             },
             {
-                text: "前往魔法学院",
-                nextScene: "magicAcademy",
+                text: "前往训练场",
+                nextScene: "trainingGround",
                 action: null
             },
             {
-                text: "前往魔法公会",
-                nextScene: "magicGuild",
+                text: "前往冒险者公会",
+                nextScene: "adventurersGuild",
                 action: null
             },
             {
                 text: "前往神秘商店",
                 nextScene: "mysticShop",
-                action: null
-            },
-            {
-                text: "前往高级装备店",
-                nextScene: "starlightHighEquipmentShop",
                 action: null
             },
             {
@@ -2840,8 +2824,7 @@ const gameScenes = {
             {
                 text: "前往铁砧堡垒",
                 nextScene: "ironAnvilFortressEntrance",
-                action: "checkQuestPrerequisite",
-                actionData: { requiredQuest: "magicExperiment" }
+                action: null,
             },
             {
                 text: "返回城门口",
@@ -2854,7 +2837,7 @@ const gameScenes = {
     // 星辉城医院
     starlightHospital: {
         title: "星辉城医院",
-        desc: "星辉城的医院是大陆上最先进的医疗机构，拥有顶级的医疗设备和最专业的医疗团队。这里能够处理任何复杂的伤势，包括魔法伤害和特殊状态。",
+        desc: "星辉城的医院是大陆上最先进的医疗机构，拥有顶级的医疗设备和最专业的医疗团队。这里能够处理任何复杂的伤势和特殊状态。",
         options: [
             {
                 text: "护士治疗（基础治疗服务）",
@@ -2875,17 +2858,6 @@ const gameScenes = {
                 actionData: { hospitalLevel: "starlight", availableDoctors: ["senior"] }
             },
             {
-                text: "购买魔法治疗药水（800金币）",
-                nextScene: "starlightHospital",
-                action: "buyItem",
-                actionData: {
-                    name: "魔法治疗药水",
-                    effect: "恢复150点生命值，解除魔法负面状态",
-                    type: "potion",
-                    price: 800
-                }
-            },
-            {
                 text: "离开医院",
                 nextScene: "starlightCitySquare",
                 action: null
@@ -2893,6 +2865,142 @@ const gameScenes = {
         ]
     },
 
+    // 训练场
+    trainingGround: {
+        title: "训练场",
+        desc: "星辉城的训练场是冒险者们提升实力的地方。这里有各种训练设施和靶场，许多冒险者正在这里磨练自己的战斗技巧。",
+        options: [
+            {
+                text: "与训练教官交谈",
+                nextScene: "trainingInstructorDialog",
+                action: null
+            },
+            {
+                text: "离开训练场",
+                nextScene: "starlightCitySquare",
+                action: null
+            }
+        ]
+    },
+
+    // 冒险者公会
+    adventurersGuild: {
+        title: "冒险者公会",
+        desc: "冒险者公会是星辉城冒险者们的聚集地。公会大厅里张贴着各种任务公告，许多经验丰富的冒险者在这里交流情报。",
+        options: [
+            {
+                text: "查看任务公告",
+                nextScene: "adventurersGuild",
+                action: "showQuestBoard",
+                actionData: { guildLevel: "starlight" }
+            },
+            {
+                text: "与公会接待员交谈",
+                nextScene: "guildReceptionistDialog",
+                action: null
+            },
+            {
+                text: "离开冒险者公会",
+                nextScene: "starlightCitySquare",
+                action: null
+            }
+        ]
+    },
+
+    // 守卫队长对话
+    guardCaptainDialog: {
+        title: "守卫队长",
+        desc: "守卫队长看到你，点头示意：'欢迎来到星辉城，冒险者。我们最近遇到了一些麻烦，需要有能力的人帮忙。'",
+        options: [
+            {
+                text: "接受任务：城市巡逻",
+                nextScene: "starlightCitySquare",
+                action: "acceptQuest",
+                actionData: {
+                    id: "cityPatrol",
+                    name: "城市巡逻",
+                    target: "剧毒藤蔓",
+                    targetCount: 8,
+                    reward: "金币800，经验2500，精良的守卫剑"
+                }
+            },
+            {
+                text: "询问关于水晶矿洞的事情",
+                nextScene: "guardCaptainDialog",
+                action: "checkQuestPrerequisite",
+                actionData: { requiredQuest: "cityPatrol" }
+            },
+            {
+                text: "离开守卫队长",
+                nextScene: "starlightCitySquare",
+                action: null
+            }
+        ]
+    },
+
+    // 守卫队长水晶矿洞对话
+    guardCaptainCrystalMineDialog: {
+        title: "水晶矿洞调查",
+        desc: "守卫队长神色严肃：'最近城外的水晶矿洞出现异常，矿工们报告说矿洞深处出现了强大的冰晶巨人。我们需要有人去调查情况并清除威胁。'",
+        options: [
+            {
+                text: "接受任务：水晶矿洞调查",
+                nextScene: "starlightCitySquare",
+                action: "acceptQuest",
+                actionData: {
+                    id: "crystalMineInvestigation",
+                    name: "水晶矿洞调查",
+                    target: "冰晶巨人",
+                    targetCount: 3,
+                    description: "调查水晶矿洞的异常情况，击败3只冰晶巨人确保矿洞安全",
+                    reward: "金币1500，经验4000，精良的水晶护甲"
+                }
+            },
+            {
+                text: "暂时不接受",
+                nextScene: "guardCaptainDialog",
+                action: null
+            }
+        ]
+    },
+
+    // 训练教官对话
+    trainingInstructorDialog: {
+        title: "训练教官",
+        desc: "训练教官正在指导其他冒险者：'新来的？如果你想在星辉城生存下去，就需要不断提升自己的实力。我可以给你一些训练建议。'",
+        options: [
+            {
+                text: "了解训练方法",
+                nextScene: "trainingInstructorDialog",
+                action: "showTrainingTips",
+                actionData: {}
+            },
+            {
+                text: "离开训练教官",
+                nextScene: "trainingGround",
+                action: null
+            }
+        ]
+    },
+
+    // 公会接待员对话
+    guildReceptionistDialog: {
+        title: "公会接待员",
+        desc: "公会接待员微笑着迎接你：'欢迎来到冒险者公会！我们这里有各种适合不同等级冒险者的任务，你可以看看有没有感兴趣的。'",
+        options: [
+            {
+                text: "查看可接任务",
+                nextScene: "guildReceptionistDialog",
+                action: "showAvailableQuests",
+                actionData: {}
+            },
+            {
+                text: "离开接待员",
+                nextScene: "adventurersGuild",
+                action: null
+            }
+        ]
+    },
 
     // 神秘商店
     mysticShop: {
@@ -2946,56 +3054,212 @@ const gameScenes = {
         ]
     },
 
-    // 魔法学院
-    magicAcademy: {
-        title: "魔法学院",
-        desc: "魔法学院是星辉城最具标志性的建筑之一。学院内充满了魔法的气息，许多年轻的魔法师在这里学习各种魔法知识。魔法导师站在学院大厅中央，似乎正在等待着什么。",
+    // 水晶矿洞入口
+    crystalMineEntrance: {
+        title: "水晶矿洞入口",
+        desc: "你来到了星辉城外的水晶矿洞入口。矿洞深处传来阵阵寒气，洞口散落着一些采矿工具，看起来矿工们撤离得很匆忙。",
         options: [
             {
-                text: "与魔法导师交谈",
-                nextScene: "magicInstructorDialog",
+                text: "进入矿洞内部",
+                nextScene: "crystalMineInterior",
                 action: null
             },
             {
-                text: "离开魔法学院",
-                nextScene: "starlightCitySquare",
-                action: null
-            }
-        ]
-    },
-
-    // 魔法导师对话
-    magicInstructorDialog: {
-        title: "魔法导师",
-        desc: "魔法导师看到你，眼中闪过一丝惊讶：'外来者？没想到在这个时候会有来自第一大陆的冒险者。不过，既然你来到了星辉城，说明你有成为魔法师的潜质。'",
-        options: [
-            {
-                text: "接受任务：魔法训练",
-                nextScene: "starlightCitySquare",
-                action: "acceptQuest",
+                text: "攻击冰晶巨人",
+                nextScene: "battle",
+                action: "encounterMonster",
                 actionData: {
-                    id: "magicTraining",
-                    name: "魔法训练",
-                    target: "魔法元素",
-                    targetCount: 8,
-                    reward: "金币800，经验2500，中级魔法书"
+                    monster: "冰晶巨人",
+                    eliteChance: 0.3,
+                    eliteMonster: "精英冰晶巨人",
+                    region: "瓦尔哈拉荒原"
                 }
             },
             {
-                text: "询问关于魔法实验的事情",
-                nextScene: "magicInstructorDialog",
-                action: "checkQuestPrerequisite",
-                actionData: { requiredQuest: "magicTraining" }
-            },
-            {
-                text: "离开魔法导师",
-                nextScene: "magicAcademy",
+                text: "返回星辉城",
+                nextScene: "starlightCitySquare",
                 action: null
             }
         ]
     },
 
-    // 添加铁砧堡垒场景
+    // 水晶矿洞内部
+    crystalMineInterior: {
+        title: "水晶矿洞内部",
+        desc: "矿洞内部布满了晶莹剔透的水晶，寒气逼人。几只冰晶巨人正在矿洞深处游荡，它们巨大的身躯几乎堵住了前进的道路。",
+        options: [
+            {
+                text: "深入矿洞深处",
+                nextScene: "crystalMineDeep",
+                action: null
+            },
+            {
+                text: "攻击冰晶巨人",
+                nextScene: "battle",
+                action: "encounterMonster",
+                actionData: {
+                    monster: "冰晶巨人",
+                    eliteChance: 0.4,
+                    eliteMonster: "精英冰晶巨人",
+                    region: "瓦尔哈拉荒原"
+                }
+            },
+            {
+                text: "搜索水晶矿脉",
+                nextScene: "crystalMineInterior",
+                action: "searchCrystalVein",
+                actionData: {
+                    itemType: "水晶矿石",
+                    successRate: 60,
+                    minAmount: 1,
+                    maxAmount: 3
+                }
+            },
+            {
+                text: "返回矿洞入口",
+                nextScene: "crystalMineEntrance",
+                action: null
+            }
+        ]
+    },
+
+    // 水晶矿洞深处
+    crystalMineDeep: {
+        title: "水晶矿洞深处",
+        desc: "这里是矿洞的最深处，巨大的水晶柱支撑着整个洞穴。一只特别强大的冰晶巨人首领守护着这里，它散发着令人胆寒的寒气。",
+        options: [
+            {
+                text: "挑战冰晶巨人首领",
+                nextScene: "battle",
+                action: "encounterMonster",
+                actionData: {
+                    monster: "冰晶巨人首领",
+                    eliteChance: 0,
+                    region: "瓦尔哈拉荒原"
+                }
+            },
+            {
+                text: "采集稀有水晶",
+                nextScene: "crystalMineDeep",
+                action: "collectRareCrystal",
+                actionData: {
+                    itemType: "稀有水晶",
+                    successRate: 30,
+                    minAmount: 1,
+                    maxAmount: 1
+                }
+            },
+            {
+                text: "返回矿洞内部",
+                nextScene: "crystalMineInterior",
+                action: null
+            }
+        ]
+    },
+
+
+
+    // 深渊裂缝入口
+    abyssCrackEntrance: {
+        title: "深渊裂缝入口",
+        desc: "你来到了铁砧堡垒附近的深渊裂缝入口。黑暗的能量从裂缝中不断涌出，空气中弥漫着令人不安的气息。几只深渊生物在裂缝周围游荡。",
+        options: [
+            {
+                text: "进入深渊裂缝",
+                nextScene: "abyssCrackInterior",
+                action: null
+            },
+            {
+                text: "攻击深渊生物",
+                nextScene: "battle",
+                action: "encounterMonster",
+                actionData: {
+                    monster: "深渊生物",
+                    eliteChance: 0.35,
+                    eliteMonster: "精英深渊生物",
+                    region: "深渊裂缝"
+                }
+            },
+            {
+                text: "返回铁砧堡垒",
+                nextScene: "ironAnvilFortressMainHall",
+                action: null
+            }
+        ]
+    },
+
+    // 深渊裂缝内部
+    abyssCrackInterior: {
+        title: "深渊裂缝内部",
+        desc: "你进入了深渊裂缝的内部，这里充满了扭曲的空间和黑暗能量。更多的深渊生物在这里聚集，它们似乎受到某种力量的操控。",
+        options: [
+            {
+                text: "深入裂缝核心",
+                nextScene: "abyssCrackCore",
+                action: null
+            },
+            {
+                text: "攻击深渊生物",
+                nextScene: "battle",
+                action: "encounterMonster",
+                actionData: {
+                    monster: "深渊生物",
+                    eliteChance: 0.45,
+                    eliteMonster: "精英深渊生物",
+                    region: "深渊裂缝"
+                }
+            },
+            {
+                text: "调查黑暗能量源",
+                nextScene: "abyssCrackInterior",
+                action: "investigateDarkEnergy",
+                actionData: {
+                    successRate: 50,
+                    reward: "黑暗能量碎片"
+                }
+            },
+            {
+                text: "返回裂缝入口",
+                nextScene: "abyssCrackEntrance",
+                action: null
+            }
+        ]
+    },
+
+    // 深渊裂缝核心
+    abyssCrackCore: {
+        title: "深渊裂缝核心",
+        desc: "你到达了深渊裂缝的核心区域。这里有一个巨大的黑暗能量漩涡，一只强大的深渊领主正在操控着整个裂缝的能量。击败它是关闭裂缝的关键。",
+        options: [
+            {
+                text: "挑战深渊领主",
+                nextScene: "battle",
+                action: "encounterMonster",
+                actionData: {
+                    monster: "深渊领主",
+                    eliteChance: 0,
+                    region: "深渊裂缝"
+                }
+            },
+            {
+                text: "尝试关闭能量漩涡",
+                nextScene: "abyssCrackCore",
+                action: "closeEnergyVortex",
+                actionData: {
+                    successRate: 80,
+                    requiredItem: "黑暗能量碎片",
+                    minAmount: 3
+                }
+            },
+            {
+                text: "返回裂缝内部",
+                nextScene: "abyssCrackInterior",
+                action: null
+            }
+        ]
+    },
+
+    // 铁砧堡垒入口
     ironAnvilFortressEntrance: {
         title: "铁砧堡垒入口",
         desc: "铁砧堡垒是第二大陆对抗深渊威胁的前线基地。这座堡垒由坚固的岩石建造而成，城墙上布满了防御工事，士兵们正在紧张地巡逻。",
@@ -3004,7 +3268,19 @@ const gameScenes = {
                 text: "进入铁砧堡垒",
                 nextScene: "ironAnvilFortressMainHall",
                 action: "checkQuestPrerequisite",
-                actionData: { requiredQuest: "magicExperiment" }
+                actionData: { requiredQuest: "crystalMineInvestigation" }
+            },
+            {
+                text: "前往水晶矿洞",
+                nextScene: "crystalMineEntrance",
+                action: "checkQuestPrerequisite",
+                actionData: { requiredQuest: "crystalMineInvestigation" }
+            },
+            {
+                text: "前往深渊裂缝",
+                nextScene: "abyssCrackEntrance",
+                action: "checkQuestPrerequisite",
+                actionData: { requiredQuest: "abyssInvestigation" }
             },
             {
                 text: "返回星辉城",
@@ -3078,24 +3354,6 @@ const gameScenes = {
         ]
     },
 
-    // 铁砧堡垒入口
-    anvilFortressEntrance: {
-        title: "铁砧堡垒入口",
-        desc: "你来到了铁砧堡垒的入口，这座巨大的堡垒由坚固的岩石建造而成，城墙上布满了战斗的痕迹。门口有几位全副武装的战士守卫着。",
-        options: [
-            {
-                text: "进入铁砧堡垒",
-                nextScene: "anvilFortressSquare",
-                action: null
-            },
-            {
-                text: "返回星辉城",
-                nextScene: "starlightCitySquare",
-                action: null
-            }
-        ]
-    },
-
     // 铁砧堡垒广场
     anvilFortressSquare: {
         title: "铁砧堡垒广场",
@@ -3130,7 +3388,7 @@ const gameScenes = {
             },
             {
                 text: "返回堡垒入口",
-                nextScene: "anvilFortressEntrance",
+                nextScene: "ironAnvilFortressEntrance",
                 action: null
             }
         ]
